@@ -50,16 +50,13 @@ return array(
 			),
 		),
 		
-		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
-		),
 		// uncomment the following to use a MySQL database
 		
 		'db'=>array(
-			'connectionString' => 'mysql:host=localhost;dbname=mode_dashboard',
+			'connectionString' => 'mysql:host=10.19.11.203;dbname=dashboard',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => 'bolo',
+			'username' => 'mode',
+			'password' => 'Aib8Zog3pao8jie0',
 			'charset' => 'utf8',
 		),
 		'authManager'=>array(

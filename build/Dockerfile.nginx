@@ -1,0 +1,8 @@
+FROM bitnamilegacy/nginx:latest
+
+COPY build/vhost.conf /opt/bitnami/nginx/conf/server_blocks/vhost.conf
+COPY . /var/www/html
+USER root
+RUN rm -rf /var/www/html/framework /var/www/html/protected /var/www/html/requirements /var/www/html/.git \
+ && rm /var/www/html/Dockerfile && rm /var/www/html/docker-compose.yml \
+ && rm -rf build && rm -rf conf && rm -rf testdata

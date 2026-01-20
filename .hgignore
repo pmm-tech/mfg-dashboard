@@ -1,6 +1,0 @@
-
-syntax: glob
-protected/runtime/
-.settings
-.idea/
-assets/*
