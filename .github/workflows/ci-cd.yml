@@ -72,15 +72,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
-      - name: Tag and push latest (for releases)
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-          docker tag ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:$VERSION ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:latest
-          docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      
       - name: Image digest
         run: |
           echo "CMS image pushed with tag: ${{ steps.image-tag.outputs.version }}"
@@ -134,15 +125,6 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:${{ steps.image-tag.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      - name: Tag and push latest (for releases)
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-          docker tag ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:$VERSION ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:latest
-          docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:latest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Image digest
         run: |
