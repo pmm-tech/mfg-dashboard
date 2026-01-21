@@ -68,8 +68,7 @@ jobs:
           context: .
           file: ./build/Dockerfile
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:${{ steps.image-tag.outputs.version }}
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:${{ steps.image-tag.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
@@ -83,7 +82,8 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Image digest
-        run: echo "CMS image pushed with tag: ${{ steps.image-tag.outputs.version }}"
+        run: |
+          echo "CMS image pushed with tag: ${{ steps.image-tag.outputs.version }}"
 
   build-and-push-nginx:
     name: Build and Push Nginx Image
@@ -131,8 +131,7 @@ jobs:
           context: .
           file: ./build/Dockerfile.nginx
           push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:${{ steps.image-tag.outputs.version }}
+          tags: ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:${{ steps.image-tag.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
@@ -146,4 +145,5 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Image digest
-        run: echo "Nginx image pushed with tag: ${{ steps.image-tag.outputs.version }}"
+        run: |
+          echo "Nginx image pushed with tag: ${{ steps.image-tag.outputs.version }}"
