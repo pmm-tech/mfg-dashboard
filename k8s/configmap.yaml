@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mfg-dashboard-config
+  namespace: mfg-dashboard
+  labels:
+    app: mfg-dashboard
+data:
+  # Application Configuration (non-sensitive)
+  APP_TIMEZONE: "Asia/Jakarta"
+  APP_TIMEOUT: "900"
+  APP_ADMIN_EMAIL: "webmaster@example.com"
+  APP_COMPANY_NAME: "Mode Fashion Group"
+  APP_PAGINATION_SIZE: "10"
+  
+  # Nginx Configuration
+  NGINX_SERVER_NAME: "mfg-dashboard.local"
+  NGINX_LISTEN_PORT: "80"
+  
+  # PHP-FPM Configuration
+  PHP_FPM_LISTEN: "127.0.0.1:9000"
+  PHP_FPM_PM_MAX_CHILDREN: "50"
+  PHP_FPM_PM_START_SERVERS: "5"
+  PHP_FPM_PM_MIN_SPARE_SERVERS: "5"
+  PHP_FPM_PM_MAX_SPARE_SERVERS: "35"

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mfg-dashboard
+  labels:
+    name: mfg-dashboard
+    app: mfg-dashboard

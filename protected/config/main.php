@@ -4,6 +4,44 @@
 // Yii::setPathOfAlias('local','path/to/local-folder');
 Yii::setPathOfAlias('chartjs', dirname(__FILE__).'/../extensions/yii-chartjs');
 
+/**
+ * Helper function to get environment variable or return default value
+ * @param string $name Environment variable name
+ * @param mixed $default Default value if ENV variable doesn't exist
+ * @return mixed Environment variable value or default
+ */
+function env($name, $default = null) {
+	$value = getenv($name);
+	return $value !== false ? $value : $default;
+}
+
+// Database configuration with environment variable support
+// Environment variables override default values if they exist
+$dbHost = env('DB_HOST', '10.19.11.203');
+$dbName = env('DB_NAME', 'dashboard');
+$dbUser = env('DB_USER', 'mode');
+$dbPassword = env('DB_PASSWORD', 'Aib8Zog3pao8jie0');
+$dbCharset = env('DB_CHARSET', 'utf8');
+$dbPort = env('DB_PORT', null);
+
+// Build connection string
+$dbConnectionString = 'mysql:host=' . $dbHost;
+if ($dbPort !== null) {
+	$dbConnectionString .= ';port=' . $dbPort;
+}
+$dbConnectionString .= ';dbname=' . $dbName;
+
+// Application parameters with environment variable support
+$appSalt = env('APP_SALT', 'phubeThAspADReDRuRatreprEwUba2Hu');
+$appTimezone = env('APP_TIMEZONE', 'Asia/Jakarta');
+$appTimeout = env('APP_TIMEOUT', 900);
+$appAdminEmail = env('APP_ADMIN_EMAIL', 'webmaster@example.com');
+$appCompanyName = env('APP_COMPANY_NAME', 'Mode Fashion Group');
+$appPaginationSize = env('APP_PAGINATION_SIZE', '10');
+
+// Convert timeout to integer if it's a string
+$appTimeout = is_numeric($appTimeout) ? (int)$appTimeout : 900;
+
 // This is the main Web application configuration. Any writable
 // CWebApplication properties can be configured here.
 return array(
@@ -50,14 +88,13 @@ return array(
 			),
 		),
 		
-		// uncomment the following to use a MySQL database
-		
+		// Database configuration - values can be overridden by environment variables
 		'db'=>array(
-			'connectionString' => 'mysql:host=10.19.11.203;dbname=dashboard',
+			'connectionString' => $dbConnectionString,
 			'emulatePrepare' => true,
-			'username' => 'mode',
-			'password' => 'Aib8Zog3pao8jie0',
-			'charset' => 'utf8',
+			'username' => $dbUser,
+			'password' => $dbPassword,
+			'charset' => $dbCharset,
 		),
 		'authManager'=>array(
 			'class'=>'CDbAuthManager',
@@ -92,17 +129,18 @@ return array(
 
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
+	// Values can be overridden by environment variables
 	'params'=>array(
 		'company'=>array(
-			'name'=>'Mode Fashion Group'
+			'name'=>$appCompanyName
 		),
 		// this is used in contact page
-		'adminEmail'=>'webmaster@example.com',
-		'salt' => 'phubeThAspADReDRuRatreprEwUba2Hu',
-		'timezone'=>'Asia/Jakarta',
-		'timeout'=>900,
+		'adminEmail'=>$appAdminEmail,
+		'salt' => $appSalt,
+		'timezone'=>$appTimezone,
+		'timeout'=>$appTimeout,
 		'pagination'=>array(
-			'size'=>'10'
+			'size'=>$appPaginationSize
 		)
 	),
 );
