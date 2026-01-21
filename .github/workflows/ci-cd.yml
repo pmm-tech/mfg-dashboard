@@ -17,11 +17,6 @@ on:
 
 env:
   REGISTRY: docker.io  # Docker Hub
-  # Update with your Docker Hub username
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  # Image names (format: username/repository-name)
-  IMAGE_NAME_CMS: ${{ secrets.DOCKER_USERNAME }}/mfg-dashboard
-  IMAGE_NAME_NGINX: ${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx
 
 jobs:
   build-and-push-cms:
@@ -64,6 +59,8 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Building CMS image with tag: $VERSION"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Build CMS Docker image
         uses: docker/build-push-action@v5
@@ -72,7 +69,7 @@ jobs:
           file: ./build/Dockerfile
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_CMS }}:${{ steps.image-tag.outputs.version }}
+            ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:${{ steps.image-tag.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
@@ -80,8 +77,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_CMS }}:$VERSION ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_CMS }}:latest
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_CMS }}:latest
+          docker tag ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:$VERSION ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Image digest
         run: echo "CMS image pushed with tag: ${{ steps.image-tag.outputs.version }}"
@@ -123,6 +122,8 @@ jobs:
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Building Nginx image with tag: $VERSION"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Build Nginx Docker image
         uses: docker/build-push-action@v5
@@ -131,7 +132,7 @@ jobs:
           file: ./build/Dockerfile.nginx
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:${{ steps.image-tag.outputs.version }}
+            ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:${{ steps.image-tag.outputs.version }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
@@ -139,8 +140,10 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         run: |
           VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-          docker tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:$VERSION ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:latest
-          docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_NGINX }}:latest
+          docker tag ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:$VERSION ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:latest
+          docker push ${{ env.REGISTRY }}/${{ secrets.DOCKER_USERNAME }}/mfg-dashboard-nginx:latest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       
       - name: Image digest
         run: echo "Nginx image pushed with tag: ${{ steps.image-tag.outputs.version }}"
