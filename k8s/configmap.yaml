@@ -13,6 +13,12 @@ data:
   APP_COMPANY_NAME: "Mode Fashion Group"
   APP_PAGINATION_SIZE: "10"
   
+  # Yii Framework Configuration
+  # Set to "true" or "1" to enable debug mode (default: "false" for production)
+  YII_DEBUG: "false"
+  # Set trace level: 0=disabled, 1-10=levels of call stack (default: "0" for production, "3" for development)
+  YII_TRACE_LEVEL: "0"
+  
   # Nginx Configuration
   NGINX_SERVER_NAME: "mfg-dashboard.local"
   NGINX_LISTEN_PORT: "80"
