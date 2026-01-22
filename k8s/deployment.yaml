@@ -22,28 +22,41 @@ spec:
         app: mfg-dashboard
         version: v1
     spec:
-      # Init container to set proper permissions
+      # Init container to copy application files and set permissions
       initContainers:
-      - name: init-permissions
-        image: busybox:1.36
+      - name: init-copy-files
+        image: purwaren/mfg-dashboard:1.0.0
+        securityContext:
+          runAsUser: 0  # Run as root to perform copy and chown operations
         command: ['sh', '-c']
         args:
           - |
-            chown -R www-data:www-data /var/www/html /var/www/framework || true
-            chmod -R 755 /var/www/html /var/www/framework || true
-            mkdir -p /var/www/html/assets /var/www/html/protected/runtime || true
-            chown -R www-data:www-data /var/www/html/assets /var/www/html/protected/runtime || true
+            # Copy application files from image to volumes
+            cp -a /var/www/html/. /mnt/app-data/ || true
+            cp -a /var/www/framework/. /mnt/framework-data/ || true
+            # Set proper permissions
+            chown -R www-data:www-data /mnt/app-data /mnt/framework-data || true
+            chmod -R 755 /mnt/app-data /mnt/framework-data || true
+            # Ensure writable directories exist
+            mkdir -p /mnt/app-data/assets /mnt/app-data/protected/runtime || true
+            chown -R www-data:www-data /mnt/app-data/assets /mnt/app-data/protected/runtime || true
+            chmod -R 775 /mnt/app-data/assets /mnt/app-data/protected/runtime || true
         volumeMounts:
         - name: app-data
-          mountPath: /var/www/html
+          mountPath: /mnt/app-data
         - name: framework-data
-          mountPath: /var/www/framework
+          mountPath: /mnt/framework-data
       
       containers:
       # PHP-FPM Container
       - name: php-fpm
-        image: mfg-dashboard:latest  # Replace with your actual image
+        image: purwaren/mfg-dashboard:1.0.0
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 33  # www-data user ID
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
         ports:
         - name: php-fpm
           containerPort: 9000
@@ -93,8 +106,13 @@ spec:
       
       # Nginx Container
       - name: nginx
-        image: nginx:1.25-alpine
+        image: purwaren/mfg-dashboard-nginx:1.0.0
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1001  # Bitnami nginx user ID
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
         ports:
         - name: http
           containerPort: 80
@@ -110,9 +128,6 @@ spec:
         - name: app-data
           mountPath: /var/www/html
           readOnly: true
-        - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
         livenessProbe:
           httpGet:
             path: /health
@@ -135,13 +150,9 @@ spec:
         emptyDir: {}
       - name: framework-data
         emptyDir: {}
-      - name: nginx-config
-        configMap:
-          name: mfg-dashboard-nginx-config
       - name: php-config
         emptyDir: {}
       
       # Security context
       securityContext:
         fsGroup: 33  # www-data group ID
-        runAsNonRoot: true

@@ -7,7 +7,6 @@ This directory contains Kubernetes manifests for deploying the MFG Dashboard app
 - `namespace.yaml` - Creates the namespace for the application
 - `configmap.yaml` - Non-sensitive configuration (timezone, timeout, etc.)
 - `secret.yaml` - Sensitive configuration (database credentials, salt)
-- `nginx-configmap.yaml` - Nginx web server configuration
 - `deployment.yaml` - Main application deployment with PHP-FPM and Nginx
 - `service.yaml` - Kubernetes service to expose the application
 - `ingress.yaml` - Ingress resource for external access (optional)
@@ -78,7 +77,6 @@ kubectl apply -f namespace.yaml
 
 # Create configmaps
 kubectl apply -f configmap.yaml
-kubectl apply -f nginx-configmap.yaml
 
 # Create secret (after updating values)
 kubectl apply -f secret.yaml
