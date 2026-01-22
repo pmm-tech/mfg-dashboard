@@ -4,17 +4,6 @@
 // Yii::setPathOfAlias('local','path/to/local-folder');
 Yii::setPathOfAlias('chartjs', dirname(__FILE__) . '/../extensions/yii-chartjs');
 
-/**
- * Helper function to get environment variable or return default value
- * @param string $name Environment variable name
- * @param mixed $default Default value if ENV variable doesn't exist
- * @return mixed Environment variable value or default
- */
-function env($name, $default = null)
-{
-	$value = getenv($name);
-	return !empty($value) ? $value : $default;
-}
 
 // Database configuration with environment variable support
 // Environment variables override default values if they exist
