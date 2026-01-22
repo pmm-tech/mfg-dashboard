@@ -8,6 +8,14 @@ services:
     volumes:
       - ./:/var/www/html
       - /etc/localtime:/etc/localtime
+    environment:
+      - DB_HOST=10.19.11.203
+      - DB_NAME=dashboard
+      - DB_USER=mode
+      - DB_PASSWORD=Aib8Zog3pao8jie0
+      - DB_CHARSET=utf8
+      - DB_PORT=3306
+      - APP_SALT=phubeThAspADReDRuRatreprEwUba2Hu
     networks:
       - app-network
     logging:
