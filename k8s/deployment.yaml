@@ -81,8 +81,6 @@ spec:
           mountPath: /var/www/html
         - name: framework-data
           mountPath: /var/www/framework
-        - name: php-config
-          mountPath: /usr/local/etc/php/conf.d
         livenessProbe:
           exec:
             command:
@@ -149,8 +147,6 @@ spec:
       - name: app-data
         emptyDir: {}
       - name: framework-data
-        emptyDir: {}
-      - name: php-config
         emptyDir: {}
       
       # Security context

@@ -31,8 +31,11 @@ RUN apk update && apk upgrade && \
         autoconf build-base
 
 # Install PHP extensions in optimized order
+# Note: docker-php-ext-install automatically creates INI files in /usr/local/etc/php/conf.d/
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install gd pdo_pgsql pdo_mysql zip
+    docker-php-ext-install gd pdo_pgsql pdo_mysql zip && \
+    ls -la /usr/local/etc/php/conf.d/ && \
+    echo "PHP extensions installed: gd, pdo_pgsql, pdo_mysql, zip"
 
 # Install Redis extension via PECL
 RUN pecl install redis && \
@@ -49,6 +52,12 @@ RUN EXT_DIR=$(php-config --extension-dir) && \
 
 # Copy PHP configuration
 COPY conf/custom.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Pre-create timezone.ini with default value and make it writable by www-data
+# This allows the entrypoint script to modify it at runtime when running as non-root
+RUN echo "date.timezone=Asia/Jakarta" > /usr/local/etc/php/conf.d/timezone.ini && \
+    chown www-data:www-data /usr/local/etc/php/conf.d/timezone.ini && \
+    chmod 664 /usr/local/etc/php/conf.d/timezone.ini
 
 # Copy entrypoint script
 COPY build/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
