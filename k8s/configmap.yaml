@@ -9,6 +9,10 @@ data:
   # Application Configuration (non-sensitive)
   APP_TIMEZONE: "Asia/Jakarta"
   APP_TIMEOUT: "900"
+  
+  # Container/PHP timezone (used by entrypoint and system)
+  PHP_TIMEZONE: "Asia/Jakarta"
+  TZ: "Asia/Jakarta"
   APP_ADMIN_EMAIL: "webmaster@example.com"
   APP_COMPANY_NAME: "Mode Fashion Group"
   APP_PAGINATION_SIZE: "10"
